@@ -20,8 +20,12 @@ fi
 
 RESULT_MESSAGE=$(cat ./build/RESULT_MESSAGE.txt)
 
-git config user.name github-actions
-git config user.email github-actions@github.com
+if [ ! -z "$GITHUB_TOKEN" ]; then
+    echo "Github actions"
+    git config user.name github-actions
+    git config user.email github-actions@github.com
+fi
+
 git add .
 
 if [ -f './build/FIRST_STEP' ]; then
