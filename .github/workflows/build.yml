@@ -16,7 +16,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: build
-          key: ${{ runner.os }}-node-modules-${{ env.GITHUB_REF }}
+          key: ${{ runner.os }}-build-${{ github.ref }}
       - run: ./scripts/preBuild.sh
       - run: node test.js
       - run: ./scripts/postBuild.sh
