@@ -1,3 +1,5 @@
-build/
-BUILD_DONE.txt
-RESULT_MESSAGE.txt
+__pycache__
+artefacts/
+cache/
+tmp/
+venv/
