@@ -16,11 +16,12 @@ git config user.name github-actions
 git config user.email github-actions@github.com
 git add .
 
-if [ -f './build/FIRST_STEP ']; then
+if [ -f './build/FIRST_STEP' ]; then
     rm -rf ./build/FIRST_STEP
     echo "First step"
     git commit -m "$RESULT_MESSAGE"
 else
+    echo "Not first step, amend"
     git commit --amend -m "$RESULT_MESSAGE"
 fi
 
