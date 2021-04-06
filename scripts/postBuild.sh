@@ -1,19 +1,27 @@
 #!/bin/sh
 
-if [ -f "./BUILD_DONE.txt" ]; then
+if [ -f "./build/BUILD_DONE.txt" ]; then
     echo "Build is done. Exit"
     exit 0
 fi
 
-if [ ! -f "./RESULT_MESSAGE.txt" ]; then
-    echo "Build should create a RESULT_MESSAGE.txt. Error"
+if [ ! -f "./build/RESULT_MESSAGE.txt" ]; then
+    echo "Build should create a build/RESULT_MESSAGE.txt. Error"
     exit 1
 fi
 
-RESULT_MESSAGE=$(cat ./RESULT_MESSAGE.txt)
+RESULT_MESSAGE=$(cat ./build/RESULT_MESSAGE.txt)
 
 git config user.name github-actions
 git config user.email github-actions@github.com
 git add .
-git commit --amend -m "$RESULT_MESSAGE"
+
+if [ -f './build/FIRST_STEP ']; then
+    rm -rf ./build/FIRST_STEP
+    echo "First step"
+    git commit -m "$RESULT_MESSAGE"
+else
+    git commit --amend -m "$RESULT_MESSAGE"
+fi
+
 git push -f
