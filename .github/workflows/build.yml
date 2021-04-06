@@ -19,6 +19,4 @@ jobs:
         with:
           path: build
           key: ${{ runner.os }}-build-${{ github.ref }}
-      - run: ./scripts/preBuild.sh
-      - run: node test.js
-      - run: ./scripts/postBuild.sh
+      - run: ./scripts/build.sh
