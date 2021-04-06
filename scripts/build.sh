@@ -1,9 +1,8 @@
 #!/bin/sh
 
 if [ ! -d "./build" ]; then
-    echo "No build directory, first step"
+    echo "No build directory"
     mkdir ./build
-    touch ./build/FIRST_STEP
 fi
 
 node test.js
@@ -27,14 +26,6 @@ if [ ! -z "$GITHUB_TOKEN" ]; then
 fi
 
 git add .
-
-if [ -f './build/FIRST_STEP' ]; then
-    rm -rf ./build/FIRST_STEP
-    echo "First step"
-    git commit -m "$RESULT_MESSAGE"
-else
-    echo "Not first step, amend"
-    git commit --amend -m "$RESULT_MESSAGE"
-fi
+git commit --amend -m "$RESULT_MESSAGE"
 
 git push -f
