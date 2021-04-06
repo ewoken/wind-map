@@ -1,4 +1,4 @@
-name: start-build
+name: build
 
 on:
   push:
@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.MY_GITHUB_PAT }}
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
