@@ -21,6 +21,9 @@ jobs:
         with:
           path: cache
           key: ${{ runner.os }}-build-${{ github.ref }}
+      - run: ./scripts/init_cds.sh
+          env:
+            CDS_API_KEY: ${{ secrets.CDS_API_KEY }}
       - run: ./scripts/build.sh
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
