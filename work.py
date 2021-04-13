@@ -31,7 +31,7 @@ def data_download(date):
                 '18:00', '19:00', '20:00',
                 '21:00', '22:00', '23:00',
             ],
-            'area': [60, -10, 35, 30],
+            # 'area': [60, -10, 35, 30],
             'format': 'netcdf',
         },
         data_file_path

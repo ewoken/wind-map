@@ -5,7 +5,7 @@ from helpers import read_input, write_build_done, write_result_message, do_exit,
 from work import bins_file_path, update_bins, compute_distrib
 
 start_date = '2000-01-01'
-last_date = date.fromisoformat('2000-01-04')
+last_date = date.fromisoformat('2000-12-31')
 
 input_string, first_build = read_input(start_date)
 input_date = date.fromisoformat(input_string)
