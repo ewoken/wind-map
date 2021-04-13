@@ -7,9 +7,9 @@ def read_input(default):
     my_file = Path(input_path)
     if my_file.is_file():
         with open(input_path, 'r') as f:
-            return f.read()
+            return f.read(), False
     else:
-        return default
+        return default, True
 
 def write_input(data):
     with open(input_path, 'w') as f:

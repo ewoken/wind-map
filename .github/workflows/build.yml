@@ -12,11 +12,18 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.MY_GITHUB_PAT }}
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-python@v2
         with:
-          node-version: 12.x
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+      - run: pip install -r requirements.txt 
       - uses: actions/cache@v2
         with:
-          path: build
+          path: cache
           key: ${{ runner.os }}-build-${{ github.ref }}
       - run: ./scripts/build.sh
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: cache
+          path: cache/
