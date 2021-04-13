@@ -4,8 +4,8 @@ import numpy as np
 
 c = cdsapi.Client()
 
-max_wind = 100
-wind_resolution = 0.1
+max_wind = 50
+wind_resolution = 0.5
 bin_count = int(max_wind / wind_resolution)
 bins_file_path = './cache/bins.nc'
 data_file_path = './tmp/data.nc'
