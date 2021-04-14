@@ -65,7 +65,7 @@ def hist_laxis(data, n_bins, range_limits):
 
 
 def update_bins(date, first_build):
-    # data_download(date)
+    data_download(date)
 
     print('Load downloaded data')
     data = xr.load_dataset(data_file_path)
