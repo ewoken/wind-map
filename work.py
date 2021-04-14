@@ -8,7 +8,7 @@ max_wind = 50
 wind_resolution = 0.5
 bin_count = int(max_wind / wind_resolution)
 bins_file_path = './cache/bins.nc'
-data_file_path = './tmp/data.nc'
+data_file_path = './tmp/data2.nc'
 
 def data_download(date):
     c.retrieve(
@@ -20,7 +20,7 @@ def data_download(date):
             ],
             'year': date.year,
             'month': date.month,
-            'day': date.day,
+            'day': [*range(1, 16)] if date.day == 1 else [*range(16, 32)], 
             'time': [
                 '00:00', '01:00', '02:00',
                 '03:00', '04:00', '05:00',
@@ -37,6 +37,33 @@ def data_download(date):
         data_file_path
     )
 
+# https://stackoverflow.com/questions/44152436/calculate-histograms-along-axis
+def hist_laxis(data, n_bins, range_limits):
+    # Setup bins and determine the bin location for each element for the bins
+    R = range_limits
+    N = data.shape[-1]
+    bins = np.linspace(R[0], R[1], n_bins + 1)
+    data2D = data.reshape(-1, N)
+    idx = np.searchsorted(bins, data2D,'right') - 1
+
+    # Some elements would be off limits, so get a mask for those
+    bad_mask = (idx==-1) | (idx==n_bins)
+
+    # We need to use bincount to get bin based counts. To have unique IDs for
+    # each row and not get confused by the ones from other rows, we need to 
+    # offset each row by a scale (using row length for this).
+    scaled_idx = n_bins*np.arange(data2D.shape[0])[:,None] + idx
+
+    # Set the bad ones to be last possible index+1 : n_bins*data2D.shape[0]
+    limit = n_bins*data2D.shape[0]
+    scaled_idx[bad_mask] = limit
+
+    # Get the counts and reshape to multi-dim
+    counts = np.bincount(scaled_idx.ravel(),minlength=limit+1)[:-1]
+    counts.shape = data.shape[:-1] + (n_bins,)
+    return counts, bins
+
+
 def update_bins(date, first_build):
     data_download(date)
 
@@ -46,23 +73,21 @@ def update_bins(date, first_build):
     print('Compute wind_speed')
     wind_speed = np.sqrt(data['u100']**2 + data['v100']**2)
 
-    lats = wind_speed['latitude'].values
-    lngs = wind_speed['longitude'].values
-    bins = np.histogram(wind_speed.sel(latitude=42, longitude=5), range=(0, max_wind), bins=bin_count)[1][:-1]
-
-    def gen(lat):
-        print(f'Compute bins for latitude: {lat}')
-        return np.array([
-            np.histogram(wind_speed.sel(latitude=lat, longitude=lng), range=(0, max_wind), bins=bin_count)[0]
-            for lng in lngs
-        ])
-
     print('Compute bins')
-    data_bins = np.array([
-        gen(lat)
-        for lat in lats
-    ])
-    bins_da = xr.DataArray(data_bins, coords=[lats, lngs, bins], dims=["lat", "lng", "bins"])
+    b, bins = hist_laxis(
+        wind_speed.transpose('latitude', 'longitude', 'time').values,
+        bin_count,
+        (0, max_wind)
+    )
+    bins_da = xr.DataArray(
+        b,
+        coords=[
+            wind_speed['latitude'].values,
+            wind_speed['longitude'].values,
+            bins[:-1]
+        ],
+        dims=["lat", "lng", "bins"]
+    )
 
     if not first_build:
         print('Update bins')

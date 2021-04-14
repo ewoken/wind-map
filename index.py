@@ -1,8 +1,12 @@
 from datetime import date, timedelta
 from pathlib import Path
 
+
 from helpers import read_input, write_build_done, write_result_message, do_exit, write_input
 from work import bins_file_path, update_bins, compute_distrib
+
+def get_start_next_month(d):
+    return (d.replace(day=1) + timedelta(days=32)).replace(day=1)
 
 start_date = '2000-01-01'
 last_date = date.fromisoformat('2000-12-31')
@@ -30,7 +34,7 @@ update_bins(input_date, first_build)
 if input_date == last_date:
     compute_distrib()
 
-next_date = input_date + timedelta(days=1)
+next_date = input_date + timedelta(days=15) if input_date.day == 1 else get_start_next_month(input_date)
 print(f'Next input {next_date}')
 write_input(str(next_date))
 

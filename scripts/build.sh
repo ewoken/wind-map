@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -rf tmp 
+# rm -rf tmp 
 
 mkdir -p ./cache
 mkdir -p ./outputs

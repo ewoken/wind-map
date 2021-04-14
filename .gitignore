@@ -4,3 +4,4 @@ artefacts/
 cache/
 tmp/
 venv/
+test.ipynb
