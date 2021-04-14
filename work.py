@@ -8,7 +8,7 @@ max_wind = 50
 wind_resolution = 0.5
 bin_count = int(max_wind / wind_resolution)
 bins_file_path = './cache/bins.nc'
-data_file_path = './tmp/data2.nc'
+data_file_path = './tmp/data.nc'
 
 def data_download(date):
     c.retrieve(
@@ -20,7 +20,7 @@ def data_download(date):
             ],
             'year': date.year,
             'month': date.month,
-            'day': [*range(1, 16)] if date.day == 1 else [*range(16, 32)], 
+            'day': [*range(1, 11)] if date.day == 1 else [*range(11, 21)] if date.day == 11 else [*range(21, 32)], 
             'time': [
                 '00:00', '01:00', '02:00',
                 '03:00', '04:00', '05:00',
@@ -65,7 +65,7 @@ def hist_laxis(data, n_bins, range_limits):
 
 
 def update_bins(date, first_build):
-    data_download(date)
+    # data_download(date)
 
     print('Load downloaded data')
     data = xr.load_dataset(data_file_path)

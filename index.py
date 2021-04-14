@@ -34,7 +34,7 @@ update_bins(input_date, first_build)
 if input_date == last_date:
     compute_distrib()
 
-next_date = input_date + timedelta(days=15) if input_date.day == 1 else get_start_next_month(input_date)
+next_date = input_date + timedelta(days=10) if input_date.day != 21 else get_start_next_month(input_date)
 print(f'Next input {next_date}')
 write_input(str(next_date))
 
