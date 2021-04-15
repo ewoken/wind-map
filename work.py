@@ -79,7 +79,7 @@ def update_bins(date, first_build):
         bin_count,
         (0, max_wind)
     )
-    bins_da = xr.DataArray(
+    bins_ds = xr.DataArray(
         b,
         coords=[
             wind_speed['latitude'].values,
@@ -87,14 +87,17 @@ def update_bins(date, first_build):
             bins[:-1]
         ],
         dims=["lat", "lng", "bins"]
-    )
+    ).to_dataset(name="bin_count")
 
     if not first_build:
         print('Update bins')
-        bins_da = bins_da + xr.load_dataset(bins_file_path)
+        bins_ds = bins_ds + xr.load_dataset(bins_file_path)
+
+    total_hours = np.sum(bins_ds['bin_count'][0][0].values)
+    print(f'Total hours: {total_hours}')
 
     print('Write new bins')
-    bins_da.to_netcdf(bins_file_path)
+    bins_ds.to_netcdf(bins_file_path)
 
 def compute_distrib():
     print('Compute distrib')
