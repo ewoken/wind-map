@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.MY_GITHUB_PAT }}
@@ -17,17 +21,21 @@ jobs:
           python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       - run: pip install -r requirements.txt 
-      - uses: actions/cache@v2
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
-          path: cache
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          workflow: build.yml
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          name: cache
+          path: ./cache
       - shell: bash
+        run: ./scripts/init_cds.sh
         env:
           CDS_API_KEY: ${{ secrets.CDS_API_KEY }}
-        run: ./scripts/init_cds.sh
       - run: ./scripts/build.sh
       - name: Archive cache
         uses: actions/upload-artifact@v2
         with:
           name: cache
-          path: cache/
+          path: ./cache/
+      - run: ./scripts/commit.sh

@@ -17,14 +17,3 @@ if [ ! -f "./tmp/RESULT_MESSAGE.txt" ]; then
     echo "Build should create a tmp/RESULT_MESSAGE.txt. Error"
     exit 1
 fi
-
-RESULT_MESSAGE=$(cat ./tmp/RESULT_MESSAGE.txt)
-
-if [ ! -z "$CI" ]; then
-    echo "Github actions"
-    git config user.name github-actions
-    git config user.email github-actions@github.com
-    git add .
-    git commit --amend -m "$RESULT_MESSAGE"
-    git push -f
-fi
