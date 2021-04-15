@@ -27,7 +27,7 @@ jobs:
         id: get_first_build
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
-        if: ${{ steps.get_first_build.outputs.first_build == 'true' }}
+        if: ${{ steps.get_first_build.outputs.first_build != 'true' }}
         with:
           workflow: build.yml
           branch: ${{ steps.extract_branch.outputs.branch }}
