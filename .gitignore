@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__
+artefacts/
+cache/
+tmp/
+venv/
+test.ipynb
