@@ -21,13 +21,18 @@ jobs:
           python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       - run: pip install -r requirements.txt 
+      - name: Get if first build
+        shell: bash
+        run: echo "##[set-output name=branch;]$([ -f "./outputs/inputs.txt" ]; first_build=$?; echo $first_build)"
+        id: first_build
+      - run:  
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
+        if: ${{ steps.extract_branch.outputs.first_build }}
         with:
           workflow: build.yml
           branch: ${{ steps.extract_branch.outputs.branch }}
           name: cache
-          path: ./cache
       - shell: bash
         run: ./scripts/init_cds.sh
         env:
