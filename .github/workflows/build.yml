@@ -23,7 +23,7 @@ jobs:
       - run: pip install -r requirements.txt 
       - name: Get if first build
         shell: bash
-        run: echo "##[set-output name=first_build;]$([ -f "./outputs/inputs.txt" ]; first_build=$?; echo $first_build)"
+        run: echo "##[set-output name=first_build;]$([ ! -f "./outputs/inputs.txt" ]; first_build=$?; echo $first_build)"
         id: get_first_build
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
