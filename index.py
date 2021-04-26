@@ -9,7 +9,7 @@ def get_start_next_month(d):
     return (d.replace(day=1) + timedelta(days=32)).replace(day=1)
 
 start_date = '2000-01-01'
-last_date = date.fromisoformat('2000-12-31')
+last_date = date.fromisoformat('2020-12-31')
 
 input_string, first_build = read_input(start_date)
 input_date = date.fromisoformat(input_string)
