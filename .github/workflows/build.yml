@@ -1,0 +1,46 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'build-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.MY_GITHUB_PAT }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+      - run: pip install -r requirements.txt 
+      - name: Get if first build
+        shell: bash
+        run: echo "##[set-output name=first_build;]$(./scripts/test_first_build.sh)"
+        id: get_first_build
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        if: ${{ steps.get_first_build.outputs.first_build != 'true' }}
+        with:
+          workflow: build.yml
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          name: cache
+          path: ./cache/
+      - shell: bash
+        run: ./scripts/init_cds.sh
+        env:
+          CDS_API_KEY: ${{ secrets.CDS_API_KEY }}
+      - run: ./scripts/build.sh
+      - name: Archive cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: cache
+          path: ./cache/
+      - run: ./scripts/commit.sh
