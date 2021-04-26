@@ -32,6 +32,7 @@ jobs:
           workflow: build.yml
           branch: ${{ steps.extract_branch.outputs.branch }}
           name: cache
+          path: ./cache/
       - shell: bash
         run: ./scripts/init_cds.sh
         env:
